@@ -18,13 +18,13 @@ class LoginSystem:
             contraseña = input("Contraseña: ")
 
             if self.validar_credenciales(usuario, contraseña):
-                print("\n✔ Inicio de sesión exitoso.\n")
+                print("\n Inicio de sesión exitoso.\n")
                 return True
             else:
                 intentos += 1
                 print(f"✘ Credenciales incorrectas. Intentos restantes: {self.intentos_maximos - intentos}\n")
 
-        print("❌ Ha superado el número máximo de intentos. Sistema bloqueado.")
+        print(" Ha superado el número máximo de intentos. Sistema bloqueado.")
         return False
 
     def validar_credenciales(self, usuario: str, contraseña: str) -> bool:
@@ -61,3 +61,4 @@ class MainApp:
 if __name__ == "__main__":
     app = MainApp()
     app.ejecutar()
+
