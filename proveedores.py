@@ -1,8 +1,8 @@
 from datetime import datetime
 
-# ============================================
+
 #          CLASE ORDEN DE COMPRA
-# ============================================
+
 
 class OrdenCompra:
     def __init__(self, orden_id, proveedor_id, fecha=None):
@@ -38,7 +38,7 @@ class OrdenCompra:
         #abstrae la complejidad del calculo
         """Registra un pago/abono a la orden"""
         if monto > (self.total - self.pagado):
-            print(f"❌ No puedes pagar más de lo que debes. Pendiente: ${self.total - self.pagado:.2f}")
+            print(f" No puedes pagar más de lo que debes. Pendiente: ${self.total - self.pagado:.2f}")
             return False
         
         self.pagado += monto
@@ -78,9 +78,9 @@ class OrdenCompra:
         return resultado
 
 
-# ============================================
+
 #               CLASE PROVEEDOR
-# ============================================
+
 
 class Proveedor:
     def __init__(self, proveedor_id, nombre, contacto):
@@ -103,12 +103,12 @@ class Proveedor:
             self.productos_asignados.append(producto_id)
             print(f"\n✔ Producto ID {producto_id} asignado al proveedor {self.nombre}.")
         else:
-            print(f"❌ El producto ID {producto_id} ya está asignado a este proveedor.")
+            print(f" El producto ID {producto_id} ya está asignado a este proveedor.")
 
 
-# ============================================
+
+
 #           GESTOR DE PROVEEDORES
-# ============================================
 
 class GestorProveedores:
     def __init__(self):
@@ -132,12 +132,12 @@ class GestorProveedores:
         contacto = input("Contacto del proveedor: ").strip()
 
         if not nombre:
-            print("❌ El nombre no puede estar vacío.")
+            print(" El nombre no puede estar vacío.")
             return
 
         for p in self.proveedores:
             if p.nombre.lower() == nombre.lower():
-                print("❌ Ese proveedor ya existe.")
+                print(" Ese proveedor ya existe.")
                 return
 
         nuevo_proveedor = Proveedor(self.next_id, nombre, contacto)
@@ -159,12 +159,12 @@ class GestorProveedores:
         try:
             proveedor_id = int(input("ID del proveedor a modificar: "))
         except ValueError:
-            print("❌ ID inválido.")
+            print(" ID inválido.")
             return
         
         proveedor = self.buscar_por_id(proveedor_id)
         if not proveedor:
-            print("❌ No existe proveedor con ese ID.")
+            print(" No existe proveedor con ese ID.")
             return
         
         print(f"Datos actuales: {proveedor}")
@@ -183,17 +183,17 @@ class GestorProveedores:
         try: 
             proveedor_id = int(input("ID del proveedor a eliminar: "))
         except ValueError:
-            print("❌ ID inválido.")
+            print(" ID inválido.")
             return
         
         proveedor = self.buscar_por_id(proveedor_id)
         if not proveedor:
-            print("❌ Ningún proveedor tiene esa ID.")
+            print(" Ningún proveedor tiene esa ID.")
             return
         
         deuda_total = sum(orden.total - orden.pagado for orden in proveedor.ordenes)
         if deuda_total > 0:
-            print(f"⚠️  ADVERTENCIA: Este proveedor tiene una deuda pendiente de ${deuda_total:.2f}")
+            print(f"  ADVERTENCIA: Este proveedor tiene una deuda pendiente de ${deuda_total:.2f}")
             confirmar = input("¿Estás seguro de eliminarlo? (s/n): ").lower()
             if confirmar != 's':
                 print("Eliminación cancelada.")
@@ -207,24 +207,24 @@ class GestorProveedores:
         try:
             proveedor_id = int(input("ID del proveedor: "))
         except ValueError:
-            print("❌ ID inválido.")
+            print(" ID inválido.")
             return
 
         proveedor = self.buscar_por_id(proveedor_id)
         if not proveedor:
-            print("❌ Ese proveedor no existe.")
+            print(" Ese proveedor no existe.")
             return
 
         try:
             producto_id = int(input("ID del producto a asignar: "))
         except ValueError:
-            print("❌ ID de producto inválido.")
+            print(" ID de producto inválido.")
             return
         
         if self.producto_manager:
             producto = self.producto_manager.buscar_por_id(producto_id)
             if not producto:
-                print("❌ Ese producto no existe.")
+                print(" Ese producto no existe.")
                 return
             
             proveedor.asignar_producto(producto_id)
@@ -234,16 +234,16 @@ class GestorProveedores:
         try:
             proveedor_id = int(input("ID del proveedor: "))
         except ValueError:
-            print("❌ ID inválido.")
+            print(" ID inválido.")
             return
 
         proveedor = self.buscar_por_id(proveedor_id)
         if not proveedor:
-            print("❌ Proveedor no registrado.")
+            print(" Proveedor no registrado.")
             return
 
         if not proveedor.productos_asignados:
-            print("❌ Este proveedor no tiene productos asignados.")
+            print(" Este proveedor no tiene productos asignados.")
             return
         
         # Crear nueva orden
@@ -268,13 +268,13 @@ class GestorProveedores:
                     break
                     
                 if producto_id not in proveedor.productos_asignados:
-                    print("❌ Este producto no está asignado a este proveedor.")
+                    print(" Este producto no está asignado a este proveedor.")
                     continue
                 
                 if self.producto_manager:
                     producto = self.producto_manager.buscar_por_id(producto_id)
                     if not producto:
-                        print("❌ Producto no encontrado.")
+                        print(" Producto no encontrado.")
                         continue
                     
                     print(f"\nProducto seleccionado: {producto.nombre}")
@@ -289,39 +289,39 @@ class GestorProveedores:
                         try:
                             cantidad = int(input(f"  Cantidad de talla {talla}: "))
                             if cantidad <= 0:
-                                print("  ❌ La cantidad debe ser mayor a 0.")
+                                print("   La cantidad debe ser mayor a 0.")
                                 continue
                             tallas_dict[talla] = cantidad
                         except ValueError:
-                            print("  ❌ Cantidad inválida.")
+                            print("   Cantidad inválida.")
                     
                     if tallas_dict:
                         nueva_orden.agregar_item(producto_id, producto.nombre, tallas_dict, producto.precio)
-                        print(f"✔ Producto agregado a la orden.")
+                        print(f" Producto agregado a la orden.")
                     else:
-                        print("❌ No se agregaron tallas para este producto.")
+                        print(" No se agregaron tallas para este producto.")
                         
             except ValueError:
-                print("❌ ID inválido.")
+                print(" ID inválido.")
         
         if nueva_orden.items:
             proveedor.ordenes.append(nueva_orden)
             print("\n✔ Orden de compra creada exitosamente:")
             print(nueva_orden)
         else:
-            print("❌ No se agregaron productos a la orden. Orden cancelada.")
+            print(" No se agregaron productos a la orden. Orden cancelada.")
 
     # -----------------------
     def ver_ordenes(self):
         try:
             proveedor_id = int(input("ID del proveedor: "))
         except ValueError:
-            print("❌ ID inválido.")
+            print(" ID inválido.")
             return
 
         proveedor = self.buscar_por_id(proveedor_id)
         if not proveedor:
-            print("❌ Proveedor no registrado.")
+            print(" Proveedor no registrado.")
             return
         
         if not proveedor.ordenes:
@@ -340,22 +340,22 @@ class GestorProveedores:
         try:
             proveedor_id = int(input("ID del proveedor: "))
         except ValueError:
-            print("❌ ID inválido.")
+            print(" ID inválido.")
             return
 
         proveedor = self.buscar_por_id(proveedor_id)
         if not proveedor:
-            print("❌ Proveedor no registrado.")
+            print(" Proveedor no registrado.")
             return
         
         if not proveedor.ordenes:
-            print("❌ No hay órdenes para este proveedor.")
+            print(" No hay órdenes para este proveedor.")
             return
         
         # Mostrar órdenes con saldo pendiente
         ordenes_pendientes = [o for o in proveedor.ordenes if o.total > o.pagado]
         if not ordenes_pendientes:
-            print("✔ No hay órdenes con saldo pendiente.")
+            print(" No hay órdenes con saldo pendiente.")
             return
         
         print("\n--- Órdenes con saldo pendiente ---")
@@ -367,7 +367,7 @@ class GestorProveedores:
             orden = next((o for o in proveedor.ordenes if o.orden_id == orden_id), None)
             
             if not orden:
-                print("❌ Orden no encontrada.")
+                print(" Orden no encontrada.")
                 return
             
             print(f"\nOrden #{orden.orden_id}")
@@ -378,7 +378,7 @@ class GestorProveedores:
             monto = float(input("\nMonto a pagar: "))
             
             if monto <= 0:
-                print("❌ El monto debe ser mayor a 0.")
+                print(" El monto debe ser mayor a 0.")
                 return
             
             if orden.registrar_pago(monto):
@@ -386,19 +386,19 @@ class GestorProveedores:
                 print(f"Nuevo saldo pendiente: ${orden.total - orden.pagado:.2f}")
                 
         except ValueError:
-            print("❌ Valores inválidos.")
+            print(" Valores inválidos.")
 
     # -----------------------
     def registrar_devolucion(self):
         try:
             proveedor_id = int(input("ID del proveedor: "))
         except ValueError:
-            print("❌ ID inválido.")
+            print(" ID inválido.")
             return
 
         proveedor = self.buscar_por_id(proveedor_id)
         if not proveedor:
-            print("❌ Proveedor no registrado.")
+            print(" Proveedor no registrado.")
             return
         
         # Calcular deuda total del proveedor
@@ -412,7 +412,7 @@ class GestorProveedores:
         
         # Mostrar productos asignados al proveedor
         if not proveedor.productos_asignados:
-            print("❌ Este proveedor no tiene productos asignados.")
+            print(" Este proveedor no tiene productos asignados.")
             return
         
         print("\n--- PRODUCTOS DEL PROVEEDOR ---")
@@ -435,20 +435,20 @@ class GestorProveedores:
                     break
                 
                 if producto_id not in proveedor.productos_asignados:
-                    print("❌ Este producto no está asignado a este proveedor.")
+                    print(" Este producto no está asignado a este proveedor.")
                     continue
                 
                 if self.producto_manager:
                     producto = self.producto_manager.buscar_por_id(producto_id)
                     if not producto:
-                        print("❌ Producto no encontrado.")
+                        print(" Producto no encontrado.")
                         continue
                     
                     # Ya existe en la lista de devoluciones?
                     existe = False
                     for dev in devoluciones:
                         if dev['producto_id'] == producto_id:
-                            print(f"❌ Este producto ya está en la lista de devolución.")
+                            print(f" Este producto ya está en la lista de devolución.")
                             existe = True
                             break
                     
@@ -458,7 +458,7 @@ class GestorProveedores:
                     cantidad = int(input(f"Cantidad de '{producto.nombre}' a devolver: "))
                     
                     if cantidad <= 0:
-                        print("❌ La cantidad debe ser mayor a 0.")
+                        print(" La cantidad debe ser mayor a 0.")
                         continue
                     
                     subtotal = cantidad * producto.precio
@@ -476,10 +476,10 @@ class GestorProveedores:
                     print(f"Total acumulado: ${total_devolucion:.2f}")
                     
             except ValueError:
-                print("❌ Valor inválido.")
+                print(" Valor inválido.")
         
         if not devoluciones:
-            print("❌ No se agregaron productos a la devolución.")
+            print(" No se agregaron productos a la devolución.")
             return
         
         # Verificar que el monto de devolución no exceda la deuda
@@ -524,7 +524,7 @@ class GestorProveedores:
         nueva_deuda = sum(orden.total - orden.pagado for orden in proveedor.ordenes)
         
         print(f"\n{'='*60}")
-        print("✔ DEVOLUCIÓN PROCESADA EXITOSAMENTE")
+        print(" DEVOLUCIÓN PROCESADA EXITOSAMENTE")
         print(f"{'='*60}")
         print(f"Total descontado: ${total_devolucion:.2f}")
         print(f"Deuda anterior: ${deuda_total:.2f}")
@@ -573,4 +573,5 @@ class GestorProveedores:
             elif opcion == "10":
                 break
             else:
+
                 print("Opción inválida.\n")
