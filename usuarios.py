@@ -98,7 +98,7 @@ class UserManager:
         elif nuevo_estado.lower() == "n":
             usuario.activo = False
 
-        print("✔ Usuario modificado correctamente.")
+        print(" Usuario modificado correctamente.")
 
     def eliminar_usuario(self):
         print("\n--- ELIMINAR USUARIO ---")
@@ -128,4 +128,5 @@ class UserManager:
             if usuario.user_id == user_id:
                 return usuario
         return None
+
 
