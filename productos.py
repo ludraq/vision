@@ -17,9 +17,7 @@ class ProductoManager:
         self.next_id = 1
         self.proveedor_manager = proveedor_manager  # Para poder asignar productos correctamente
 
-    # ==============================
-    #           MENÚ
-    # ==============================
+    
     def menu_productos(self):
         while True:
             print("\n===== GESTIÓN DE PRODUCTOS =====")
@@ -45,11 +43,11 @@ class ProductoManager:
             elif opcion == "6":
                 break
             else:
-                print("❌ Opción no válida.")
+                print(" Opción no válida.")
 
-    # ==============================
-    #             CRUD
-    # ==============================
+    
+    #CRUD
+    
     def ver_productos(self):
         print("\n--- LISTA DE PRODUCTOS ---")
         if not self.productos:
@@ -66,22 +64,22 @@ class ProductoManager:
         try:
             precio = float(input("Precio: "))
             if precio < 0:
-                print("❌ El precio no puede ser negativo.")
+                print(" El precio no puede ser negativo.")
                 return
                 
             stock = int(input("Stock inicial: "))
             if stock < 0:
-                print("❌ El stock no puede ser negativo.")
+                print(" El stock no puede ser negativo.")
                 return
         except ValueError:
-            print("❌ Precio o stock inválidos.")
+            print(" Precio o stock inválidos.")
             return
 
         nuevo = Producto(self.next_id, nombre, precio, stock)
         self.productos.append(nuevo)
         self.next_id += 1
 
-        print("✔ Producto creado correctamente.")
+        print(" Producto creado correctamente.")
 
     def modificar_producto(self):
         print("\n--- MODIFICAR PRODUCTO ---")
@@ -121,13 +119,13 @@ class ProductoManager:
             try:
                 stock = int(nuevo_stock)
                 if stock < 0:
-                    print("❌ El stock no puede ser negativo.")
+                    print(" El stock no puede ser negativo.")
                 else:
                     producto.stock = stock
             except:
-                print("❌ Stock inválido.")
+                print(" Stock inválido.")
 
-        print("✔ Producto modificado correctamente.")
+        print(" Producto modificado correctamente.")
 
     def eliminar_producto(self):
         print("\n--- ELIMINAR PRODUCTO ---")
@@ -139,12 +137,12 @@ class ProductoManager:
         try:
             producto_id = int(input("ID del producto a eliminar: "))
         except ValueError:
-            print("❌ ID inválido.")
+            print(" ID inválido.")
             return
 
         producto = self.buscar_por_id(producto_id)
         if not producto:
-            print("❌ Producto no encontrado.")
+            print(" Producto no encontrado.")
             return
 
         # Si estaba asignado a un proveedor → eliminarlo de la lista
@@ -156,9 +154,9 @@ class ProductoManager:
         self.productos.remove(producto)
         print("✔ Producto eliminado correctamente.")
 
-    # ==============================
+    
     #     ASIGNAR A PROVEEDOR
-    # ==============================
+    
     def asignar_a_proveedor(self):
         print("\n--- ASIGNAR PRODUCTO A PROVEEDOR ---")
 
@@ -173,17 +171,17 @@ class ProductoManager:
             producto_id = int(input("ID del producto: "))
             proveedor_id = int(input("ID del proveedor: "))
         except ValueError:
-            print("❌ ID inválido.")
+            print(" ID inválido.")
             return
 
         producto = self.buscar_por_id(producto_id)
         proveedor = self.proveedor_manager.buscar_por_id(proveedor_id)
 
         if not producto:
-            print("❌ Producto no encontrado.")
+            print(" Producto no encontrado.")
             return
         if not proveedor:
-            print("❌ Proveedor no encontrado.")
+            print(" Proveedor no encontrado.")
             return
 
         # Quitar asignación anterior si existía
@@ -196,13 +194,14 @@ class ProductoManager:
         producto.proveedor_id = proveedor_id
         proveedor.productos_asignados.append(producto.producto_id)
 
-        print(f"✔ Producto '{producto.nombre}' asignado al proveedor '{proveedor.nombre}'.")
+        print(f" Producto '{producto.nombre}' asignado al proveedor '{proveedor.nombre}'.")
 
-    # ==============================
+    
     #       MÉTODO AUXILIAR
-    # ==============================
+    
     def buscar_por_id(self, producto_id):
         for p in self.productos:
             if p.producto_id == producto_id:
                 return p
+
         return None
