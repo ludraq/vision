@@ -15,9 +15,9 @@ class UserManager:
         self.usuarios = []
         self.next_id = 1  # Generador automático de IDs
 
-    # ==============================
+    
+    
     #         MENÚ USUARIOS
-    # ==============================
     def menu_usuarios(self):
         while True:
             print("\n===== GESTIÓN DE USUARIOS =====")
@@ -40,11 +40,11 @@ class UserManager:
             elif opcion == "5":
                 break
             else:
-                print("❌ Opción no válida.")
+                print(" Opción no válida.")
 
-    # ==============================
+    
     #           CRUD
-    # ==============================
+    
 
     def ver_usuarios(self):
         print("\n--- LISTA DE USUARIOS ---")
@@ -64,7 +64,7 @@ class UserManager:
         self.usuarios.append(nuevo)
         self.next_id += 1
 
-        print("✔ Usuario agregado correctamente.")
+        print(" Usuario agregado correctamente.")
 
     def modificar_usuario(self):
         print("\n--- MODIFICAR USUARIO ---")
@@ -75,12 +75,12 @@ class UserManager:
         try:
             user_id = int(input("Ingrese el ID del usuario: "))
         except ValueError:
-            print("❌ ID inválido.")
+            print(" ID inválido.")
             return
 
         usuario = self.buscar_usuario_por_id(user_id)
         if not usuario:
-            print("❌ Usuario no encontrado.")
+            print(" Usuario no encontrado.")
             return
 
         print(f"Datos actuales: {usuario}")
@@ -109,22 +109,23 @@ class UserManager:
         try:
             user_id = int(input("Ingrese el ID del usuario a eliminar: "))
         except ValueError:
-            print("❌ ID inválido.")
+            print(" ID inválido.")
             return
 
         usuario = self.buscar_usuario_por_id(user_id)
 
         if usuario:
             self.usuarios.remove(usuario)
-            print("✔ Usuario eliminado correctamente.")
+            print(" Usuario eliminado correctamente.")
         else:
-            print("❌ Usuario no encontrado.")
+            print(" Usuario no encontrado.")
 
-    # ==============================
+    
     #       MÉTODO AUXILIAR
-    # ==============================
+    
     def buscar_usuario_por_id(self, user_id):
         for usuario in self.usuarios:
             if usuario.user_id == user_id:
                 return usuario
         return None
+
