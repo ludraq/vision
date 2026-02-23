@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision - Productos</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>👟 Vision</h2>
+                <p id="userWelcome">Cargando...</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <ul id="sidebarMenu">                   
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <h1>👟 Gestión de Productos</h1>
+                    <p class="text-secondary">Catálogo de productos y asignación a proveedores</p>
+                </div>
+                <button class="btn-primary" id="btnNuevoProducto">+ Nuevo Producto</button>
+            </header>
+
+            <!-- Búsqueda -->
+            <div class="card mb-2">
+                <div class="form-group">
+                    <input 
+                        type="text" 
+                        id="buscarProducto" 
+                        placeholder="🔍 Buscar producto..."
+                    >
+                </div>
+            </div>
+
+            <!-- Galería de productos -->
+            <div id="galeriaProductos">
+                <p class="text-center text-secondary">Cargando productos...</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: Nuevo/Editar Producto -->
+    <div id="modalProducto" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitulo">Nuevo Producto</h2>
+                <button class="modal-close" id="btnCerrarModal">&times;</button>
+            </div>
+            
+            <form id="formProducto">
+                <input type="hidden" id="productoId">
+                
+                <div class="form-group">
+                    <label for="nombre">Nombre del Producto *</label>
+                    <input type="text" id="nombre" required placeholder="Ej: Tenis Nike Air Max">
+                </div>
+                
+                <div class="form-group">
+                    <label for="descripcion">Descripción</label>
+                    <textarea id="descripcion" rows="3" placeholder="Detalles del producto..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="precio">Precio Base *</label>
+                    <input type="number" id="precio" step="0.01" required min="0" placeholder="180000">
+                    <small class="text-secondary">Este es el precio de referencia. Cada proveedor puede tener su propio precio.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="imagen">Imagen del Producto</label>
+                    <input type="file" id="imagen" accept="image/*">
+                    <small class="text-secondary">Formatos: JPG, PNG. Máx 2MB</small>
+                </div>
+                
+                <!-- Preview de imagen -->
+                <div id="imagenPreview" style="display: none;" class="form-group">
+                    <label>Vista previa:</label>
+                    <img id="imagenPreviewImg" style="max-width: 200px; border-radius: 8px;">
+                </div>
+                
+                <div id="errorModal" class="error-message" style="display: none;"></div>
+                
+                <div class="flex flex-end mt-2">
+                    <button type="button" class="btn-secondary" id="btnCancelar">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="btnGuardar">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Asignar a Proveedores -->
+    <div id="modalProveedores" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2>🏢 Asignar Proveedores</h2>
+                <button class="modal-close" id="btnCerrarModalProveedores">&times;</button>
+            </div>
+            
+            <div style="padding: var(--spacing-lg);">
+                <p class="mb-2">
+                    <strong>Producto:</strong> <span id="productoNombreAsignar"></span>
+                </p>
+                
+                <!-- Agregar nuevo proveedor -->
+                <div class="card mb-2">
+                    <h3>Agregar Proveedor</h3>
+                    <form id="formAsignarProveedor">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="proveedorSelect">Proveedor *</label>
+                                <select id="proveedorSelect" required>
+                                    <option value="">Seleccionar...</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="precioProveedor">Precio *</label>
+                                <input type="number" id="precioProveedor" step="0.01" required min="0">
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Agregar Proveedor</button>
+                    </form>
+                </div>
+                
+                <!-- Lista de proveedores asignados -->
+                <div class="card">
+                    <h3>Proveedores que Manejan este Producto</h3>
+                    <div id="listaProveedoresAsignados">
+                        <p class="text-secondary">Cargando...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/pages/productos.js"></script>
+    <script src="../js/sidebar.js"></script>
+</body>
+</html>

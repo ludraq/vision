@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision - Usuarios</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <!-- Botón de menú móvil -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+    
+    <!-- Overlay para cerrar el menú -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+    <div class="dashboard-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>👟 Vision</h2>
+                <p id="userWelcome">Cargando...</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <ul id="sidebarMenu">                   
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="content-header">
+                <div>
+                    <h1>👥 Gestión de Usuarios</h1>
+                    <p class="text-secondary">Administrar usuarios del sistema</p>
+                </div>
+                <button class="btn-primary" id="btnNuevoUsuario">+ Nuevo Usuario</button>
+            </header>
+
+            <!-- Filtros y búsqueda -->
+            <div class="card mb-2">
+                <div class="form-group">
+                    <input 
+                        type="text" 
+                        id="buscarUsuario" 
+                        placeholder="🔍 Buscar por nombre, usuario o correo..."
+                    >
+                </div>
+            </div>
+
+            <!-- Tabla de usuarios -->
+            <div class="card">
+                <div id="tablaUsuarios" class="table-container">
+                    <p class="text-center text-secondary">Cargando usuarios...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: Nuevo/Editar Usuario -->
+    <div id="modalUsuario" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitulo">Nuevo Usuario</h2>
+                <button class="modal-close" id="btnCerrarModal">&times;</button>
+            </div>
+            
+            <form id="formUsuario">
+                <input type="hidden" id="usuarioId">
+                
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="nombre">Nombre Completo *</label>
+                        <input type="text" id="nombre" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="usuario">Usuario *</label>
+                        <input type="text" id="usuario" required>
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="correo">Correo Electrónico</label>
+                        <input type="email" id="correo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="celular">Celular</label>
+                        <input type="tel" id="celular">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="clave">Contraseña <span id="claveOpcional">(dejar vacío para mantener)</span></label>
+                    <input type="password" id="clave">
+                </div>
+                
+                <div class="form-group">
+                    <label for="roles">Roles *</label>
+                    <select id="roles" multiple size="4" required>
+                        <!-- Se cargará dinámicamente -->
+                    </select>
+                    <small class="text-secondary">Mantén presionado Ctrl (Cmd en Mac) para seleccionar múltiples roles</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="estado" checked>
+                        Usuario activo
+                    </label>
+                </div>
+                
+                <div id="errorModal" class="error-message" style="display: none;"></div>
+                
+                <div class="flex flex-end mt-2">
+                    <button type="button" class="btn-secondary" id="btnCancelar">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="btnGuardar">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/pages/usuarios.js"></script>
+    <script src="../js/sidebar.js"></script>
+</body>
+</html>

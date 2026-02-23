@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vision - Confirmar Disponibilidad</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #CCDAD1;
+      min-height: 100vh;
+      padding: 20px;
+      color: #333333;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+      background: #0F172A;
+      color: #E5E7EB;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: #001C55;
+      color: #fff;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 16px;
+      text-align: center;
+      transition: background-color 0.3s;
+    }
+
+    body.dark-mode .header {
+      background: #1D4ED8;
+    }
+
+    .header h1 {
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+
+    .header p {
+      font-size: 0.85rem;
+      opacity: .7;
+      margin-top: 6px;
+    }
+
+    .header .proveedor-nombre {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #7dd3a8;
+      margin-top: 8px;
+    }
+
+    .ya-respondido {
+      background: #d1fae5;
+      border: 1px solid #6ee7b7;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .ya-respondido h2 {
+      color: #065f46;
+      font-size: 1.1rem;
+    }
+
+    .ya-respondido p {
+      color: #047857;
+      font-size: 0.85rem;
+      margin-top: 6px;
+    }
+
+    .producto-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+      transition: background-color 0.3s;
+    }
+
+    body.dark-mode .producto-card {
+      background: #1E293B;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .producto-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f0f0f8;
+    }
+
+    .producto-header img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    .producto-header .no-img {
+      width: 100px;
+      height: 100px;
+      background: #e8e8f0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+
+    .producto-nombre {
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .talla-row {
+      display: grid;
+      grid-template-columns: 60px 1fr 1fr 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #f8f8f8;
+      font-size: 0.85rem;
+    }
+
+    .talla-row:last-child {
+      border-bottom: none;
+    }
+
+    .talla-num {
+      font-weight: 800;
+      font-size: 1rem;
+      color: #333333;
+      text-align: center;
+      background: #f0f0f8;
+      border-radius: 6px;
+      padding: 4px;
+    }
+
+    .talla-solicitado {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .talla-solicitado span {
+      display: block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: #aaa;
+    }
+
+    /* Toggle Sí/No */
+    .toggle-disponible {
+      display: flex;
+      border-radius: 7px;
+      overflow: hidden;
+      border: 1px solid #ddd;
+    }
+
+    .toggle-disponible button {
+      flex: 1;
+      padding: 6px 4px;
+      border: none;
+      background: #f5f5f5;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .15s;
+      color: #888;
+    }
+
+    .toggle-disponible button.si.active {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .toggle-disponible button.no.active {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .input-cantidad {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #ddd;
+      border-radius: 7px;
+      font-size: 0.85rem;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .input-cantidad:disabled {
+      background: #f5f5f5;
+      color: #bbb;
+    }
+
+    .btn-enviar {
+      width: 100%;
+      padding: 14px;
+      background: #4c0498;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: all 0.3s;
+    }
+
+    body.dark-mode .btn-enviar {
+      background: #8B5CF6;
+    }
+
+    .btn-enviar:hover {
+      opacity: .9;
+      transform: translateY(-1px);
+    }
+
+    .btn-enviar:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .error-msg {
+      background: #fee2e2;
+      color: #991b1b;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.83rem;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #888;
+    }
+
+    @media (max-width: 480px) {
+      .talla-row {
+        grid-template-columns: 50px 1fr 1fr 1fr;
+        gap: 5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="header">
+      <h1>👟 Vision — Confirmación de Disponibilidad</h1>
+      <p>Por favor indica qué productos tienes disponibles</p>
+      <div class="proveedor-nombre" id="nombreProveedor"></div>
+    </div>
+
+    <div id="contenido">
+      <div class="loading">⏳ Cargando...</div>
+    </div>
+
+    <div id="errorMsg" class="error-msg"></div>
+
+  </div>
+
+  <script src="js/theme.js"></script>
+  <script>
+    const token = window.location.pathname.split("/").pop();
+    let datosApartado = null;
+
+    // ── Cargar apartado ──
+    async function cargarApartado() {
+      try {
+        const res = await fetch(`/api/proveedor/apartado/${token}`);
+        const data = await res.json();
+
+        if (!data.ok) {
+          mostrarError(data.msg || 'No se encontró el apartado');
+          return;
+        }
+
+        datosApartado = data;
+        document.getElementById('nombreProveedor').textContent = `Proveedor: ${data.apartado.proveedor}`;
+
+        if (data.apartado.estado !== 'pendiente') {
+          renderRespondido();
+          return;
+        }
+
+        renderFormulario(data.productos);
+      } catch (e) {
+        mostrarError('Error al cargar el apartado. Intenta de nuevo.');
+      }
+    }
+
+    // ── Formulario de respuesta ──
+    function renderFormulario(productos) {
+      // Agrupar por producto
+      const agrupados = {};
+      productos.forEach(p => {
+        if (!agrupados[p.id_producto]) {
+          agrupados[p.id_producto] = {
+            nombre: p.producto,
+            ruta_foto: p.ruta_foto,
+            tallas: []
+          };
+        }
+        agrupados[p.id_producto].tallas.push(p);
+      });
+
+      let html = '';
+
+      Object.values(agrupados).forEach(prod => {
+        const img = prod.ruta_foto
+          ? `<img src="${prod.ruta_foto}" alt="${prod.nombre}">`
+          : `<div class="no-img">👟</div>`;
+
+        let tallasHtml = `
+                <div class="talla-row" style="font-size:0.7rem;color:#333333;text-transform:uppercase;letter-spacing:.05em;font-weight:700;">
+                    <div style="text-align:center;">Talla</div>
+                    <div style="text-align:center;">Pedido</div>
+                    <div style="text-align:center;">¿Tienes?</div>
+                    <div style="text-align:center;">Cantidad</div>
+                </div>
+            `;
+
+        prod.tallas.forEach(t => {
+          tallasHtml += `
+                    <div class="talla-row">
+                        <div class="talla-num">${t.talla == 0 ? 'General' : t.talla}</div>
+                        <div class="talla-solicitado">
+                            ${t.cantidad_solicitada}
+                            <span>pedidos</span>
+                        </div>
+                        <div class="toggle-disponible">
+                            <button class="si active" 
+                                data-id="${t.id_detalle}" 
+                                onclick="toggleDisp(${t.id_detalle}, true, this)">
+                                ✓ Sí
+                            </button>
+                            <button class="no" 
+                                data-id="${t.id_detalle}"
+                                onclick="toggleDisp(${t.id_detalle}, false, this)">
+                                ✗ No
+                            </button>
+                        </div>
+                        <input type="number" class="input-cantidad"
+                            id="cant_${t.id_detalle}"
+                            min="1" max="${t.cantidad_solicitada * 2}"
+                            value="${t.cantidad_solicitada}"
+                            placeholder="Cant.">
+                    </div>
+                `;
+        });
+
+        html += `
+                <div class="producto-card">
+                    <div class="producto-header">
+                        ${img}
+                        <div class="producto-nombre">${prod.nombre}</div>
+                    </div>
+                    ${tallasHtml}
+                </div>
+            `;
+      });
+
+      html += `
+            <button class="btn-enviar" id="btnEnviar" onclick="enviarRespuesta()">
+                ✅ Confirmar disponibilidad
+            </button>
+        `;
+
+      document.getElementById('contenido').innerHTML = html;
+    }
+
+    function renderRespondido() {
+      document.getElementById('contenido').innerHTML = `
+            <div class="ya-respondido">
+                <h2>✅ Ya respondiste este apartado</h2>
+                <p>Tu respuesta fue registrada el ${formatearFecha(datosApartado.apartado.fecha_respuesta || '')}.<br>
+                Gracias por tu colaboración.</p>
+            </div>
+        `;
+    }
+
+    // ── Toggle Sí/No por talla ──
+    function toggleDisp(id_detalle, disponible, btn) {
+      const row = btn.closest('.talla-row');
+      const btnSi = row.querySelector('.si');
+      const btnNo = row.querySelector('.no');
+      const input = document.getElementById(`cant_${id_detalle}`);
+
+      btnSi.classList.toggle('active', disponible);
+      btnNo.classList.toggle('active', !disponible);
+
+      input.disabled = !disponible;
+      if (!disponible) input.value = 0;
+      else {
+        // Restaurar valor original
+        const talla = datosApartado.productos.find(p => p.id_detalle == id_detalle);
+        if (talla) input.value = talla.cantidad_solicitada;
+      }
+    }
+
+    // ── Enviar respuesta ──
+    async function enviarRespuesta() {
+      const btn = document.getElementById('btnEnviar');
+      const errMsg = document.getElementById('errorMsg');
+      btn.disabled = true;
+      btn.textContent = 'Enviando...';
+      errMsg.style.display = 'none';
+
+      try {
+        const productos = [];
+
+        datosApartado.productos.forEach(p => {
+          const btnSi = document.querySelector(`.si[data-id="${p.id_detalle}"]`);
+          const input = document.getElementById(`cant_${p.id_detalle}`);
+
+          if (!btnSi || !input) return;
+
+          const disponible = btnSi.classList.contains('active');
+          const cantidad = parseInt(input.value) || 0;
+
+          if (disponible && cantidad <= 0) {
+            throw new Error(`Para la talla ${p.talla} del producto "${p.producto}", debes indicar la cantidad disponible`);
+          }
+
+          productos.push({
+            id_detalle: p.id_detalle,
+            disponible,
+            cantidad_disponible: disponible ? cantidad : 0
+          });
+        });
+
+        const res = await fetch(`/api/proveedor/apartado/${token}/responder`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productos })
+        });
+
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.msg);
+
+        // Mostrar confirmación
+        document.getElementById('contenido').innerHTML = `
+                <div class="ya-respondido">
+                    <h2>✅ ¡Respuesta enviada!</h2>
+                    <p>${data.msg}<br>Nos comunicaremos contigo próximamente para coordinar la recogida.</p>
+                </div>
+            `;
+
+      } catch (e) {
+        errMsg.textContent = e.message;
+        errMsg.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = '✅ Confirmar disponibilidad';
+      }
+    }
+
+    function mostrarError(msg) {
+      document.getElementById('contenido').innerHTML = `
+            <div class="ya-respondido" style="background:#fee2e2;border-color:#fca5a5;">
+                <h2 style="color:#991b1b;">❌ Error</h2>
+                <p style="color:#b91c1c;">${msg}</p>
+            </div>
+        `;
+    }
+
+    function formatearFecha(fecha) {
+      if (!fecha) return '';
+      const parte = fecha.substring(0, 10);
+      const [a, m, d] = parte.split('-');
+      return `${d}/${m}/${a}`;
+    }
+
+    cargarApartado();
+  </script>
+</body>
+
+</html>

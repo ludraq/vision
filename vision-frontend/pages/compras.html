@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision - Compras</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .compras-table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .compras-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            font-size: 0.83rem;
+            min-width: 700px;
+        }
+
+        .compras-table thead tr {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        .compras-table th {
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.78rem;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+
+        .compras-table td {
+            padding: 9px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+
+        .compras-table tbody tr:hover {
+            background: #f8f9ff;
+        }
+
+        .compras-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge-compra {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-pendiente {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-parcial {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
+
+        .badge-recibido {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-apartado {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .acciones-td {
+            display: flex;
+            gap: 4px;
+        }
+
+        .btn-tbl {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.76rem;
+            font-weight: 600;
+        }
+
+        .btn-tbl.ver {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .btn-tbl.del {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .filtros-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            padding: 14px 16px;
+            background: #fff;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .filtros-bar .form-group {
+            margin: 0;
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .filtros-bar label {
+            font-size: 0.73rem;
+            font-weight: 600;
+            color: #555;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .filtros-bar input,
+        .filtros-bar select {
+            padding: 7px 10px;
+            font-size: 0.82rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 100%;
+            background: #fafafa;
+        }
+
+        /* Modal detalle compra */
+        .modal-compra .modal-content {
+            max-width: 760px;
+            max-height: 92vh;
+            overflow-y: auto;
+        }
+
+        .detalle-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+
+        .detalle-table th {
+            background: #f0f0f8;
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #555;
+        }
+
+        .detalle-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #f3f3f3;
+            vertical-align: middle;
+        }
+
+        /* Modal nueva compra */
+        .modal-nueva .modal-content {
+            max-width: 620px;
+            max-height: 92vh;
+            overflow-y: auto;
+        }
+
+        .producto-compra-item {
+            display: grid;
+            grid-template-columns: 1fr 90px 100px 32px;
+            gap: 8px;
+            align-items: center;
+            background: #f8f9ff;
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            font-size: 0.82rem;
+        }
+
+        .btn-quitar {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #dc3545;
+            font-size: 1rem;
+            padding: 2px;
+            border-radius: 4px;
+        }
+
+        .btn-quitar:hover {
+            background: #fde8e8;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>👟 Vision</h2>
+                <p id="userWelcome">Cargando...</p>
+            </div>
+            <nav class="sidebar-menu">
+                <ul id="sidebarMenu"></ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <h1>🛒 Compras a Proveedores</h1>
+                    <p class="text-secondary">Registro de compras manuales y generadas por apartados</p>
+                </div>
+                <button class="btn-primary" id="btnNuevaCompra">+ Nueva Compra</button>
+            </header>
+
+            <!-- Filtros -->
+            <div class="filtros-bar">
+                <div class="form-group">
+                    <label>Proveedor</label>
+                    <select id="filtroProveedor">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="filtroEstado">
+                        <option value="">Todos</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="parcial">Parcial</option>
+                        <option value="recibido">Recibido</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Desde</label>
+                    <input type="date" id="filtroDesde">
+                </div>
+                <div class="form-group">
+                    <label>Hasta</label>
+                    <input type="date" id="filtroHasta">
+                </div>
+                <button class="btn-primary" id="btnFiltrar"
+                    style="align-self:flex-end;padding:7px 16px;font-size:0.83rem;">Filtrar</button>
+                <button class="btn-secondary" id="btnLimpiar"
+                    style="align-self:flex-end;padding:7px 16px;font-size:0.83rem;">Limpiar</button>
+            </div>
+
+            <!-- Tabla -->
+            <div class="card" style="padding:0;overflow:hidden;">
+                <div class="compras-table-wrapper">
+                    <table class="compras-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Fecha</th>
+                                <th>Proveedor</th>
+                                <th>Ítems</th>
+                                <th>Total pares</th>
+                                <th>Total</th>
+                                <th>Origen</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpoTabla">
+                            <tr>
+                                <td colspan="9" class="text-center text-secondary" style="padding:32px;">Cargando...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ═══════════════════════ -->
+    <!-- MODAL: DETALLE COMPRA  -->
+    <!-- ═══════════════════════ -->
+    <div id="modalDetalle" class="modal modal-compra">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Detalle de Compra <span id="detalleId" style="color:#888;font-weight:400;"></span></h2>
+                <button class="modal-close" id="btnCerrarDetalle">&times;</button>
+            </div>
+            <div id="contenidoDetalle" style="padding:var(--spacing-lg);">Cargando...</div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════ -->
+    <!-- MODAL: NUEVA COMPRA    -->
+    <!-- ═══════════════════════ -->
+    <div id="modalNueva" class="modal modal-nueva">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🛒 Nueva Compra Manual</h2>
+                <button class="modal-close" id="btnCerrarNueva">&times;</button>
+            </div>
+            <form id="formNueva" style="padding:var(--spacing-lg);">
+                <div class="form-group">
+                    <label>Proveedor *</label>
+                    <select id="proveedorNueva" required>
+                        <option value="">Seleccionar proveedor...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Observaciones</label>
+                    <textarea id="obsNueva" rows="2" placeholder="Notas opcionales..."></textarea>
+                </div>
+
+                <div style="margin-bottom:10px;">
+                    <label
+                        style="font-size:0.78rem;font-weight:700;color:#555;display:block;margin-bottom:6px;">Productos
+                        *</label>
+                    <div style="display:flex;gap:8px;margin-bottom:8px;">
+                        <select id="selectorProductoNueva"
+                            style="flex:1;padding:7px;border:1px solid #ddd;border-radius:8px;font-size:0.82rem;">
+                            <option value="">Agregar producto...</option>
+                        </select>
+                        <button type="button" class="btn-primary" onclick="agregarProductoCompra()"
+                            style="padding:7px 14px;font-size:0.82rem;">+</button>
+                    </div>
+                    <div id="productosCompraLista"></div>
+                </div>
+
+                <div id="errorNueva" class="error-message" style="display:none;"></div>
+                <div class="flex flex-end mt-2" style="gap:10px;">
+                    <button type="button" class="btn-secondary" id="btnCancelarNueva">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="btnGuardarNueva">Guardar Compra</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/pages/compras.js"></script>
+    <script src="../js/sidebar.js"></script>
+</body>
+
+</html>

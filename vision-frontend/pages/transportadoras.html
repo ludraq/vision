@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision - Transportadoras</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        /* ── TARJETAS DE TRANSPORTADORA ── */
+        .trans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .trans-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #1a1a2e;
+            cursor: pointer;
+            transition: box-shadow .2s, transform .15s;
+        }
+
+        .trans-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
+            transform: translateY(-2px);
+        }
+
+        .trans-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .trans-nombre {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #1a1a2e;
+        }
+
+        .trans-cuenta {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .trans-ciclo {
+            background: #e8e8f4;
+            color: #3730a3;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .trans-saldos {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .saldo-chip {
+            background: #f8f9ff;
+            border-radius: 8px;
+            padding: 8px 10px;
+        }
+
+        .saldo-chip .s-label {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            font-weight: 700;
+        }
+
+        .saldo-chip .s-valor {
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        .s-verde {
+            color: #1a6b3c;
+        }
+
+        .s-rojo {
+            color: #842029;
+        }
+
+        .s-azul {
+            color: #0a58ca;
+        }
+
+        .trans-acciones {
+            display: flex;
+            gap: 6px;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f8;
+        }
+
+        .btn-trans {
+            flex: 1;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 7px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity .15s;
+        }
+
+        .btn-trans:hover {
+            opacity: .8;
+        }
+
+        .btn-trans.ver {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .btn-trans.edit {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .btn-trans.del {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* ── MODAL ESTADO DE CUENTA ── */
+        .modal-cuenta .modal-content {
+            max-width: 900px;
+            max-height: 92vh;
+            overflow-y: auto;
+        }
+
+        /* ── SALDOS GRANDES ── */
+        .saldos-banner {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .saldo-big {
+            background: #1a1a2e;
+            color: #fff;
+            border-radius: 12px;
+            padding: 16px 18px;
+            text-align: center;
+        }
+
+        .saldo-big .sb-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 700;
+        }
+
+        .saldo-big .sb-valor {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-top: 4px;
+        }
+
+        .saldo-big.verde {
+            background: #064e3b;
+        }
+
+        .saldo-big.rojo {
+            background: #7f1d1d;
+        }
+
+        /* ── TABS ── */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #e8e8f4;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            border: none;
+            background: none;
+            font-size: 0.83rem;
+            font-weight: 700;
+            color: #888;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: color .15s;
+        }
+
+        .tab-btn.active {
+            color: #1a1a2e;
+            border-bottom-color: #1a1a2e;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ── TABLA SIMPLE ── */
+        .mini-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+
+        .mini-table th {
+            background: #f0f0f8;
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 0.74rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: #555;
+        }
+
+        .mini-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #f5f5f5;
+            vertical-align: middle;
+        }
+
+        .mini-table tbody tr:hover {
+            background: #fafafa;
+        }
+
+        .mini-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ── FILTRO FECHAS ── */
+        .filtro-periodo {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            padding: 12px 14px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
+
+        .filtro-periodo label {
+            font-size: 0.73rem;
+            font-weight: 700;
+            color: #666;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .filtro-periodo input {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            font-size: 0.82rem;
+        }
+
+        /* ── FORM PAGO ── */
+        .pago-form {
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-top: 12px;
+        }
+
+        .pago-form h4 {
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #1a1a2e;
+            margin: 0 0 10px 0;
+        }
+
+        .pago-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .pago-form-grid .form-group {
+            margin: 0;
+        }
+
+        .pago-form-grid label {
+            font-size: 0.73rem;
+            font-weight: 600;
+            color: #666;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .pago-form-grid input {
+            padding: 7px 10px;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            font-size: 0.82rem;
+            width: 100%;
+        }
+
+        @media (max-width: 640px) {
+            .saldos-banner {
+                grid-template-columns: 1fr;
+            }
+
+            .pago-form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>👟 Vision</h2>
+                <p id="userWelcome">Cargando...</p>
+            </div>
+            <nav class="sidebar-menu">
+                <ul id="sidebarMenu"></ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <h1>🚚 Transportadoras</h1>
+                    <p class="text-secondary">Gestión y estado de cuenta por transportadora</p>
+                </div>
+                <button class="btn-primary" id="btnNuevaTrans">+ Nueva Transportadora</button>
+            </header>
+
+            <div class="trans-grid" id="transGrid">
+                <p class="text-secondary">Cargando...</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- MODAL: NUEVA / EDITAR TRANSPORTADORA   -->
+    <!-- ═══════════════════════════════════════ -->
+    <div id="modalTrans" class="modal">
+        <div class="modal-content" style="max-width:520px;">
+            <div class="modal-header">
+                <h2 id="modalTransTitulo">Nueva Transportadora</h2>
+                <button class="modal-close" id="btnCerrarTrans">&times;</button>
+            </div>
+            <form id="formTrans" style="padding:var(--spacing-lg);">
+                <input type="hidden" id="transId">
+
+                <div class="form-group">
+                    <label>Nombre *</label>
+                    <input type="text" id="transNombre" required placeholder="Ej: Interrapidisimo">
+                </div>
+                <div class="form-group">
+                    <label>Nombre de cuenta</label>
+                    <input type="text" id="transUsuario" placeholder="Ej: Karime Lindarte">
+                    <small class="text-secondary">Nombre que aparece en los pedidos</small>
+                </div>
+                <div class="form-group">
+                    <label>URL de seguimiento</label>
+                    <input type="text" id="transUrl" placeholder="https://...">
+                    <small class="text-secondary">La guía se concatena al final</small>
+                </div>
+                <div class="form-group">
+                    <label>Ciclo de liquidación (días) *</label>
+                    <input type="number" id="transCiclo" min="1" max="365" value="1" required>
+                    <small class="text-secondary">Interrapidisimo = 1 día · Servientrega = 7 días</small>
+                </div>
+                <div class="form-group">
+                    <label>Observaciones</label>
+                    <textarea id="transObservaciones" rows="2" placeholder="Notas adicionales..."></textarea>
+                </div>
+
+                <div id="errorTrans" class="error-message" style="display:none;"></div>
+                <div class="flex flex-end mt-2" style="gap:10px;">
+                    <button type="button" class="btn-secondary" id="btnCancelarTrans">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="btnGuardarTrans">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- MODAL: ESTADO DE CUENTA                -->
+    <!-- ═══════════════════════════════════════ -->
+    <div id="modalCuenta" class="modal modal-cuenta">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📊 Estado de Cuenta — <span id="cuentaNombreTrans"></span></h2>
+                <button class="modal-close" id="btnCerrarCuenta">&times;</button>
+            </div>
+            <div style="padding:var(--spacing-lg);" id="contenidoCuenta">
+                Cargando...
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/pages/transportadoras.js"></script>
+    <script src="../js/sidebar.js"></script>
+</body>
+
+</html>

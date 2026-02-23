@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vision - Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+
+  <!-- Botón menú móvil -->
+  <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="dashboard-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>👟 Vision</h2>
+        <p id="userWelcome">Cargando...</p>
+      </div>
+
+      <nav class="sidebar-menu">
+        <ul id="sidebarMenu"></ul>
+      </nav>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="main-content">
+
+      <!-- HEADER -->
+      <header class="content-header">
+        <div>
+          <h1>Panel de Control</h1>
+          <p class="text-secondary">
+            Bienvenido de nuevo, <span id="userName">Usuario</span>
+          </p>
+        </div>
+        <div>
+          <p class="text-secondary">
+            Rol: <strong id="userRole">Cargando...</strong>
+          </p>
+        </div>
+      </header>
+
+      <!-- TARJETAS -->
+      <div class="stats-grid">
+
+        <div class="stat-card card" data-role="administrador">
+          <div class="stat-icon">🏢</div>
+          <div class="stat-info">
+            <p class="stat-label">Proveedores</p>
+            <h2 class="stat-value" id="totalProveedores">-</h2>
+          </div>
+        </div>
+
+        <div class="stat-card card" data-role="administrador">
+          <div class="stat-icon">👟</div>
+          <div class="stat-info">
+            <p class="stat-label">Productos</p>
+            <h2 class="stat-value" id="totalProductos">-</h2>
+          </div>
+        </div>
+
+        <div class="stat-card card" data-role="administrador">
+          <div class="stat-icon">📦</div>
+          <div class="stat-info">
+            <p class="stat-label">Compras Totales</p>
+            <h2 class="stat-value" id="totalCompras">-</h2>
+          </div>
+        </div>
+
+        <div class="stat-card card" data-role="administrador">
+          <div class="stat-icon">💰</div>
+          <div class="stat-info">
+            <p class="stat-label">Deuda Total</p>
+            <h2 class="stat-value" id="deudaTotal">$0</h2>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SECCIONES -->
+      <div class="dashboard-sections">
+
+        <div class="card" data-role="administrador">
+          <div class="card-header">
+            <h3>📦 Últimas Compras</h3>
+          </div>
+          <div id="ultimasCompras" class="table-container">
+            <p class="text-center text-secondary">Cargando...</p>
+          </div>
+        </div>
+
+        <div class="card" data-role="administrador">
+          <div class="card-header">
+            <h3>🏢 Proveedores con Mayor Deuda</h3>
+          </div>
+          <div id="proveedoresDeuda" class="table-container">
+            <p class="text-center text-secondary">Cargando...</p>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/theme.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/pages/dashboard.js"></script>
+
+</body>
+
+</html>

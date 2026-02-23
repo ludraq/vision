@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision - Proveedores</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>👟 Vision</h2>
+                <p id="userWelcome">Cargando...</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <ul id="sidebarMenu">                   
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <h1>🏢 Gestión de Proveedores</h1>
+                    <p class="text-secondary">Administrar proveedores y deudas</p>
+                </div>
+                <button class="btn-primary" id="btnNuevoProveedor">+ Nuevo Proveedor</button>
+            </header>
+
+            <!-- Filtros -->
+            <div class="card mb-2">
+                <div class="form-group">
+                    <input 
+                        type="text" 
+                        id="buscarProveedor" 
+                        placeholder="🔍 Buscar por nombre o cédula..."
+                    >
+                </div>
+            </div>
+
+            <!-- Tabla de proveedores -->
+            <div class="card">
+                <div id="tablaProveedores" class="table-container">
+                    <p class="text-center text-secondary">Cargando proveedores...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: Nuevo/Editar Proveedor -->
+    <div id="modalProveedor" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitulo">Nuevo Proveedor</h2>
+                <button class="modal-close" id="btnCerrarModal">&times;</button>
+            </div>
+            
+            <form id="formProveedor">
+                <input type="hidden" id="proveedorId">
+                
+                <div class="form-group">
+                    <label for="nombre">Nombre *</label>
+                    <input type="text" id="nombre" required>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="cedula">Cédula/NIT *</label>
+                        <input type="text" id="cedula" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="tel" id="telefono">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="direccion">Dirección</label>
+                    <textarea id="direccion" rows="3"></textarea>
+                </div>
+                
+                <div id="errorModal" class="error-message" style="display: none;"></div>
+                
+                <div class="flex flex-end mt-2">
+                    <button type="button" class="btn-secondary" id="btnCancelar">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="btnGuardar">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Registrar Abono -->
+    <div id="modalAbono" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💰 Registrar Abono</h2>
+                <button class="modal-close" id="btnCerrarModalAbono">&times;</button>
+            </div>
+            
+            <form id="formAbono">
+                <input type="hidden" id="abonoProveedorId">
+                
+                <p class="mb-2">
+                    <strong>Proveedor:</strong> <span id="abonoProveedorNombre"></span><br>
+                    <strong>Deuda actual:</strong> <span id="abonoDeudaActual"></span>
+                </p>
+                
+                <div class="form-group">
+                    <label for="monto_abono">Monto del Abono *</label>
+                    <input type="number" id="monto_abono" step="0.01" required min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="metodo_pago">Método de Pago</label>
+                    <select id="metodo_pago">
+                        <option value="">Seleccionar...</option>
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Transferencia">Transferencia</option>
+                        <option value="Cheque">Cheque</option>
+                        <option value="Consignación">Consignación</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="observaciones_abono">Observaciones</label>
+                    <textarea id="observaciones_abono" rows="3"></textarea>
+                </div>
+                
+                <div id="errorModalAbono" class="error-message" style="display: none;"></div>
+                
+                <div class="flex flex-end mt-2">
+                    <button type="button" class="btn-secondary" id="btnCancelarAbono">Cancelar</button>
+                    <button type="submit" class="btn-success" id="btnGuardarAbono">Registrar Abono</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/pages/proveedores.js"></script>
+    <script src="../js/sidebar.js"></script>
+</body>
+</html>

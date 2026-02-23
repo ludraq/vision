@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision - Iniciar Sesión</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Logo o título -->
+            <div class="login-header">
+                <div
+                    style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 0.5rem;">
+                    <img src="/imagenes/logovision.png" alt="Vision Logo" style="height: 60px; width: auto;">
+                    <h1>Vision</h1>
+                </div>
+                <p>Sistema de Gestión Empresarial</p>
+            </div>
+
+            <!-- Formulario de Login -->
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="correo">Correo Electrónico</label>
+                    <input type="email" id="correo" name="correo" placeholder="ejemplo@vision.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="clave">Contraseña</label>
+                    <input type="password" id="clave" name="clave" placeholder="••••••••" required>
+                </div>
+
+                <!-- Mensaje de error -->
+                <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+                <!-- Botón de envío -->
+                <button type="submit" id="loginBtn" class="btn-primary">
+                    Iniciar Sesión
+                </button>
+
+                <!-- Loading spinner -->
+                <div id="loading" class="loading" style="display: none;">
+                    Iniciando sesión...
+                </div>
+            </form>
+
+            <!-- Footer -->
+            <div class="login-footer">
+                <p>Proyecto SENA - 2025</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/theme.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/pages/login.js"></script>
+</body>
+
+</html>

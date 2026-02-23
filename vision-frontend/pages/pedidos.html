@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision - Pedidos</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        /* ── TABLA DE PEDIDOS ── */
+        .pedidos-table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .pedidos-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            font-size: 0.82rem;
+            min-width: 1100px;
+        }
+
+        .pedidos-table thead tr {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        .pedidos-table th {
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+            font-size: 0.78rem;
+            letter-spacing: 0.03em;
+        }
+
+        .pedidos-table td {
+            padding: 9px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .pedidos-table tbody tr:hover {
+            background: #f8f9ff;
+        }
+
+        .pedidos-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ── BADGES DE ESTADO ── */
+        .badge-estado {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .estado-pendiente {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .estado-viajando {
+            background: #cfe2ff;
+            color: #0a58ca;
+        }
+
+        .estado-bodega {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .estado-distribucion {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .estado-intento {
+            background: #fde8d8;
+            color: #9c4b00;
+        }
+
+        .estado-confirmacion {
+            background: #e2d9f3;
+            color: #4a2080;
+        }
+
+        .estado-oficina {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .estado-devolucion {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .estado-entregado {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        /* ── FILTROS ── */
+        .filtros-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            padding: 14px 16px;
+            background: #fff;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .filtros-bar .form-group {
+            margin: 0;
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .filtros-bar label {
+            font-size: 0.73rem;
+            font-weight: 600;
+            color: #555;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .filtros-bar input,
+        .filtros-bar select {
+            padding: 7px 10px;
+            font-size: 0.82rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 100%;
+            background: #fafafa;
+        }
+
+        /* ── MODAL PEDIDO (FORMULARIO) ── */
+        .modal-pedido .modal-content {
+            max-width: 860px;
+            max-height: 92vh;
+            overflow-y: auto;
+        }
+
+        .seccion-form {
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+        }
+
+        .seccion-form h3 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #1a1a2e;
+            margin: 0 0 12px 0;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #e0e0f0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        /* ── BUSCADOR DE PRODUCTOS ── */
+        .producto-search-box {
+            position: relative;
+        }
+
+        .producto-search-box input {
+            width: 100%;
+        }
+
+        .producto-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 220px;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            display: none;
+        }
+
+        .producto-dropdown.open {
+            display: block;
+        }
+
+        .producto-option {
+            padding: 9px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.83rem;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .producto-option:hover {
+            background: #f0f4ff;
+        }
+
+        .producto-option img {
+            width: 36px;
+            height: 36px;
+            object-fit: cover;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .producto-option .thumb-placeholder {
+            width: 36px;
+            height: 36px;
+            background: #e8e8f0;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .producto-option .info {
+            flex: 1;
+        }
+
+        .producto-option .info strong {
+            display: block;
+        }
+
+        .producto-option .info span {
+            color: #888;
+            font-size: 0.76rem;
+        }
+
+        /* ── LISTA DE PRODUCTOS AGREGADOS ── */
+        .productos-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .producto-item {
+            display: grid;
+            grid-template-columns: 36px 1fr 80px 90px 80px 32px;
+            gap: 8px;
+            align-items: center;
+            background: #fff;
+            border: 1px solid #e5e5ef;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 0.83rem;
+        }
+
+        .producto-item img,
+        .producto-item .thumb-sm {
+            width: 36px;
+            height: 36px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .producto-item .thumb-sm {
+            background: #e8e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .producto-item input[type="number"],
+        .producto-item select {
+            padding: 5px 7px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.81rem;
+            width: 100%;
+        }
+
+        .producto-item .nombre-prod {
+            font-weight: 600;
+            font-size: 0.82rem;
+        }
+
+        .btn-quitar {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #dc3545;
+            font-size: 1rem;
+            padding: 2px;
+            border-radius: 4px;
+            line-height: 1;
+        }
+
+        .btn-quitar:hover {
+            background: #fde8e8;
+        }
+
+        /* ── MODAL DETALLE ── */
+        .modal-detalle .modal-content {
+            max-width: 720px;
+        }
+
+        .detalle-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 20px;
+            font-size: 0.85rem;
+            margin-bottom: 14px;
+        }
+
+        .detalle-fila {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .detalle-fila .etiqueta {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+        }
+
+        .detalle-fila .valor {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .valor-money {
+            color: #1a6b3c;
+            font-weight: 700;
+        }
+
+        .detalle-productos-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            margin-top: 4px;
+        }
+
+        .detalle-productos-table th {
+            background: #f0f0f8;
+            padding: 7px 10px;
+            text-align: left;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: #555;
+        }
+
+        .detalle-productos-table td {
+            padding: 7px 10px;
+            border-bottom: 1px solid #f3f3f3;
+        }
+
+        /* ── MODAL ACTUALIZAR ESTADO ── */
+        .modal-estado .modal-content {
+            max-width: 500px;
+        }
+
+        /* ── TOTALES BARRA ── */
+        .totales-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .total-chip {
+            background: #fff;
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 0.8rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .total-chip .chip-label {
+            font-size: 0.69rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            font-weight: 700;
+        }
+
+        .total-chip .chip-valor {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #1a1a2e;
+        }
+
+        .total-chip.verde .chip-valor {
+            color: #1a6b3c;
+        }
+
+        .total-chip.azul .chip-valor {
+            color: #0a58ca;
+        }
+
+        .total-chip.rojo .chip-valor {
+            color: #842029;
+        }
+
+        /* ── ACCIONES EN TABLA ── */
+        .acciones-td {
+            display: flex;
+            gap: 4px;
+        }
+
+        .btn-tbl {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 600;
+            transition: opacity .15s;
+        }
+
+        .btn-tbl:hover {
+            opacity: .8;
+        }
+
+        .btn-tbl.ver {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .btn-tbl.edit {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .btn-tbl.del {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* ── RESUMEN PEDIDO (preview al crear) ── */
+        .resumen-pedido {
+            background: #1a1a2e;
+            color: #fff;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-top: 10px;
+            font-size: 0.83rem;
+            display: none;
+        }
+
+        .resumen-pedido.visible {
+            display: block;
+        }
+
+        .resumen-pedido .r-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .resumen-pedido .r-row:last-child {
+            border-bottom: none;
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+
+        .resumen-pedido .r-row span:last-child {
+            font-weight: 700;
+            color: #7dd3a8;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .grid-3 {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .filtros-bar {
+                flex-direction: column;
+            }
+
+            .producto-item {
+                grid-template-columns: 36px 1fr 70px 75px 70px 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>👟 Vision</h2>
+                <p id="userWelcome">Cargando...</p>
+            </div>
+            <nav class="sidebar-menu">
+                <ul id="sidebarMenu"></ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <h1>📦 Gestión de Pedidos</h1>
+                    <p class="text-secondary">Registro y seguimiento de pedidos</p>
+                </div>
+                <button class="btn-primary" id="btnNuevoPedido">+ Nuevo Pedido</button>
+            </header>
+
+            <!-- Chips de totales -->
+            <div class="totales-row" id="totalesRow"></div>
+
+            <!-- Filtros -->
+            <div class="filtros-bar">
+                <div class="form-group">
+                    <label>🔍 Buscar</label>
+                    <input type="text" id="filtroTexto" placeholder="Cliente, guía, celular...">
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="filtroEstado">
+                        <option value="">Todos los estados</option>
+                        <option>Pendiente</option>
+                        <option>VIAJANDO EN RUTA NACIONAL</option>
+                        <option>VIAJANDO EN RUTA REGIONAL</option>
+                        <option>INGRESADO A BODEGA</option>
+                        <option>EN DISTRIBUCION URBANA</option>
+                        <option>PARA SEGUNDO INTENTO DE ENTREGA</option>
+                        <option>PARA TERCER INTENTO DE ENTREGA</option>
+                        <option>EN CONFIRMACION TELEFONICA</option>
+                        <option>PARA RECLAMAR EN OFICINA</option>
+                        <option>PARA DEVOLVER AL REMITENTE</option>
+                        <option>EN PROCESO DE DEVOLUCION</option>
+                        <option>DEVUELTO AL REMITENTE</option>
+                        <option>ENTREGADO</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Desde</label>
+                    <input type="date" id="filtroDesde">
+                </div>
+                <div class="form-group">
+                    <label>Hasta</label>
+                    <input type="date" id="filtroHasta">
+                </div>
+                <button class="btn-primary" id="btnFiltrar"
+                    style="align-self:flex-end; padding:7px 16px; font-size:0.83rem;">Filtrar</button>
+                <button class="btn-secondary" id="btnLimpiar"
+                    style="align-self:flex-end; padding:7px 16px; font-size:0.83rem;">Limpiar</button>
+            </div>
+
+            <!-- Tabla de pedidos -->
+            <div class="card" style="padding:0; overflow:hidden;">
+                <div class="pedidos-table-wrapper">
+                    <table class="pedidos-table" id="tablaPedidos">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Guía</th>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Ciudad</th>
+                                <th>Asesor</th>
+                                <th>Transportadora</th>
+                                <th>Pares</th>
+                                <th>V. Recaudar</th>
+                                <th>Costo Envío</th>
+                                <th>V. Total</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpoTabla">
+                            <tr>
+                                <td colspan="13" class="text-center text-secondary" style="padding:32px;">Cargando
+                                    pedidos...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- MODAL: NUEVO / EDITAR PEDIDO               -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div id="modalPedido" class="modal modal-pedido">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalPedidoTitulo">Nuevo Pedido</h2>
+                <button class="modal-close" id="btnCerrarModalPedido">&times;</button>
+            </div>
+            <form id="formPedido" style="padding: var(--spacing-lg);">
+                <input type="hidden" id="pedidoId">
+
+                <!-- Datos del cliente -->
+                <div class="seccion-form">
+                    <h3>👤 Datos del Cliente</h3>
+                    <div class="grid-3">
+                        <div class="form-group" style="margin:0;">
+                            <label>Nombre *</label>
+                            <input type="text" id="nombreCliente" required placeholder="Nombre completo">
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label>Cédula <small>(opcional)</small></label>
+                            <input type="text" id="cedulaCliente" placeholder="Sin cédula">
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label>Celular *</label>
+                            <input type="text" id="celularCliente" required placeholder="300 000 0000">
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label>Ciudad destino *</label>
+                            <input type="text" id="ciudadDestino" required placeholder="Ciudad">
+                        </div>
+                        <div class="form-group" style="margin:0; grid-column: span 2;">
+                            <label>Dirección con barrio *</label>
+                            <input type="text" id="direccionCliente" required
+                                placeholder="Cra 10 # 20-30 Barrio Centro">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Datos del envío -->
+                <div class="seccion-form">
+                    <h3>🚚 Datos del Envío</h3>
+                    <div class="grid-3">
+                        <div class="form-group" style="margin:0;">
+                            <label>Transportadora *</label>
+                            <select id="transportadoraSelect" required>
+                                <option value="">Seleccionar...</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label>Costo envío</label>
+                            <input type="number" id="costoEnvio" min="0" step="100" placeholder="0" value="0">
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label>Valor publicidad</label>
+                            <input type="number" id="valorPublicidad" min="0" step="100" placeholder="0" value="0">
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label>Número de guía</label>
+                            <input type="number" id="numeroGuia" placeholder="(se asigna después)">
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label>Asesor</label>
+                            <input type="text" id="nombreAsesor" readonly
+                                style="background:#f0f0f8; cursor:not-allowed;">
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label>Cuenta transportadora</label>
+                            <input type="text" id="nombreCuenta" readonly
+                                style="background:#f0f0f8; cursor:not-allowed;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Productos -->
+                <div class="seccion-form">
+                    <h3>👟 Productos</h3>
+
+                    <!-- Buscador -->
+                    <div class="producto-search-box" style="margin-bottom:10px;">
+                        <input type="text" id="buscarProductoInput"
+                            placeholder="🔍 Buscar producto por nombre o código...">
+                        <div class="producto-dropdown" id="productoDropdown"></div>
+                    </div>
+
+                    <!-- O elegir del selector -->
+                    <div
+                        style="display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:0.8rem; color:#888;">
+                        <span style="flex:1; height:1px; background:#e0e0f0;"></span>
+                        <span>o elegir de la lista</span>
+                        <span style="flex:1; height:1px; background:#e0e0f0;"></span>
+                    </div>
+                    <select id="selectorProducto"
+                        style="width:100%; padding:8px; border:1px solid #ddd; border-radius:8px; font-size:0.83rem; margin-bottom:10px;">
+                        <option value="">-- Seleccionar producto --</option>
+                    </select>
+
+                    <!-- Lista de productos agregados -->
+                    <div class="productos-lista" id="productosLista">
+                        <p class="text-secondary" id="sinProductos"
+                            style="font-size:0.82rem; text-align:center; padding:8px;">
+                            Aún no has agregado productos
+                        </p>
+                    </div>
+
+                    <!-- Resumen de valores -->
+                    <div class="resumen-pedido" id="resumenPedido">
+                        <div class="r-row"><span>Valor productos</span><span id="r_productos">$0</span></div>
+                        <div class="r-row"><span>Costo envío</span><span id="r_envio">$0</span></div>
+                        <div class="r-row"><span>Publicidad</span><span id="r_publicidad">$0</span></div>
+                        <div class="r-row"><span>Comisión</span><span id="r_comision">$0</span></div>
+                        <div class="r-row"><span>Valor a recaudar</span><span id="r_recaudar">$0</span></div>
+                        <div class="r-row"><span>Valor total (con envío)</span><span id="r_total">$0</span></div>
+                    </div>
+                </div>
+
+                <!-- Observaciones -->
+                <div class="form-group">
+                    <label>Observaciones</label>
+                    <textarea id="observacionesPedido" rows="2" placeholder="Notas adicionales..."></textarea>
+                </div>
+
+                <div id="errorPedido" class="error-message" style="display:none;"></div>
+
+                <div class="flex flex-end mt-2" style="gap:10px;">
+                    <button type="button" class="btn-secondary" id="btnCancelarPedido">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="btnGuardarPedido">Guardar Pedido</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- MODAL: VER DETALLE PEDIDO                  -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div id="modalDetalle" class="modal modal-detalle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Detalle del Pedido <span id="detalle_id" style="color:#888; font-weight:400;"></span></h2>
+                <button class="modal-close" id="btnCerrarDetalle">&times;</button>
+            </div>
+            <div style="padding: var(--spacing-lg);" id="contenidoDetalle">
+                Cargando...
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- MODAL: ACTUALIZAR ESTADO / DATOS           -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div id="modalEstado" class="modal modal-estado">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏️ Actualizar Pedido</h2>
+                <button class="modal-close" id="btnCerrarEstado">&times;</button>
+            </div>
+            <form id="formEstado" style="padding: var(--spacing-lg);">
+                <input type="hidden" id="estadoPedidoId">
+
+                <div class="form-group">
+                    <label>Estado del envío</label>
+                    <select id="nuevoEstado">
+                        <option value="">Sin cambio</option>
+                        <option>Pendiente</option>
+                        <option>VIAJANDO EN RUTA NACIONAL</option>
+                        <option>VIAJANDO EN RUTA REGIONAL</option>
+                        <option>INGRESADO A BODEGA</option>
+                        <option>EN DISTRIBUCION URBANA</option>
+                        <option>PARA SEGUNDO INTENTO DE ENTREGA</option>
+                        <option>PARA TERCER INTENTO DE ENTREGA</option>
+                        <option>EN CONFIRMACION TELEFONICA</option>
+                        <option>PARA RECLAMAR EN OFICINA</option>
+                        <option>PARA DEVOLVER AL REMITENTE</option>
+                        <option>EN PROCESO DE DEVOLUCION</option>
+                        <option>DEVUELTO AL REMITENTE</option>
+                        <option>ENTREGADO</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Número de guía</label>
+                    <input type="number" id="nuevaGuia" placeholder="Número de guía">
+                </div>
+
+                <div class="form-group">
+                    <label>Razón del cliente (seguimiento)</label>
+                    <textarea id="razonCliente" rows="2"
+                        placeholder="Razón que el cliente da al rastrear..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha de la razón</label>
+                    <input type="date" id="fechaRazon">
+                </div>
+
+                <div class="form-group">
+                    <label>Costo de envío</label>
+                    <input type="number" id="nuevoCostoEnvio" min="0" step="100" placeholder="Costo envío">
+                </div>
+
+                <div class="form-group" id="campoComisionAdmin" style="display:none;">
+                    <label>Comisión (solo admin)</label>
+                    <input type="number" id="nuevaComision" min="0" step="500" placeholder="Valor comisión">
+                </div>
+
+                <div class="form-group">
+                    <label>Observaciones</label>
+                    <textarea id="nuevasObservaciones" rows="2"></textarea>
+                </div>
+
+                <div id="errorEstado" class="error-message" style="display:none;"></div>
+
+                <div class="flex flex-end mt-2" style="gap:10px;">
+                    <button type="button" class="btn-secondary" id="btnCancelarEstado">Cancelar</button>
+                    <button type="submit" class="btn-primary">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/pages/pedidos.js"></script>
+    <script src="../js/sidebar.js"></script>
+</body>
+
+</html>

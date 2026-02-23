@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision - Configuración</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .config-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .config-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 22px 24px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .config-card h2 {
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: #1a1a2e;
+            margin: 0 0 18px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e8e8f4;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Transportadoras */
+        .transportadora-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f3f8;
+        }
+
+        .transportadora-item:last-child {
+            border-bottom: none;
+        }
+
+        .transportadora-nombre {
+            font-weight: 700;
+            font-size: 0.88rem;
+            flex: 1;
+        }
+
+        .transportadora-cuenta {
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        .btn-edit-cuenta {
+            background: #f0f0f8;
+            border: none;
+            border-radius: 7px;
+            padding: 5px 10px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            color: #3730a3;
+            font-weight: 600;
+        }
+
+        .btn-edit-cuenta:hover {
+            background: #e0e0f8;
+        }
+
+        /* Bonos */
+        .bono-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 11px 0;
+            border-bottom: 1px solid #f3f3f8;
+        }
+
+        .bono-item:last-child {
+            border-bottom: none;
+        }
+
+        .bono-info {
+            flex: 1;
+        }
+
+        .bono-nombre {
+            font-weight: 700;
+            font-size: 0.86rem;
+        }
+
+        .bono-desc {
+            font-size: 0.77rem;
+            color: #777;
+            margin-top: 2px;
+        }
+
+        .bono-valor {
+            font-weight: 800;
+            color: #1a6b3c;
+            font-size: 0.88rem;
+        }
+
+        .bono-badge {
+            font-size: 0.68rem;
+            padding: 2px 7px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .bono-activo {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .bono-inactivo {
+            background: #f3f4f6;
+            color: #9ca3af;
+        }
+
+        .bono-acciones {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .btn-sm {
+            padding: 4px 9px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-sm.toggle {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .btn-sm.del {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Formulario inline */
+        .form-inline {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px dashed #e0e0f0;
+        }
+
+        .form-inline .form-group {
+            margin: 0;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .form-inline label {
+            font-size: 0.73rem;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .form-inline input,
+        .form-inline select {
+            padding: 7px 10px;
+            font-size: 0.82rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        /* Comisión grande */
+        .comision-display {
+            text-align: center;
+            padding: 20px 0 10px;
+        }
+
+        .comision-valor {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #1a1a2e;
+            line-height: 1;
+        }
+
+        .comision-label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-top: 4px;
+        }
+
+        .comision-sub {
+            font-size: 0.8rem;
+            color: #555;
+            margin-top: 8px;
+        }
+
+        /* Modal editar cuenta */
+        .modal-sm .modal-content {
+            max-width: 420px;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>👟 Vision</h2>
+                <p id="userWelcome">Cargando...</p>
+            </div>
+            <nav class="sidebar-menu">
+                <ul id="sidebarMenu"></ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <h1>⚙️ Configuración</h1>
+                    <p class="text-secondary">Gestión de comisiones, bonos y cuentas de transportadoras</p>
+                </div>
+            </header>
+
+            <div class="config-grid">
+
+                <!-- ── COMISIÓN BASE ── -->
+                <div class="config-card">
+                    <h2>💰 Comisión por Pedido</h2>
+                    <div class="comision-display">
+                        <div class="comision-valor" id="comisionDisplay">$0</div>
+                        <div class="comision-label">comisión base actual</div>
+                        <div class="comision-sub">Se aplica automáticamente a cada pedido nuevo</div>
+                    </div>
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label>Nueva comisión base</label>
+                            <input type="number" id="nuevaComisionBase" min="0" step="500" placeholder="Ej: 7000">
+                        </div>
+                        <button class="btn-primary" onclick="actualizarComision()"
+                            style="padding:7px 14px; font-size:0.83rem;">
+                            Actualizar
+                        </button>
+                    </div>
+                    <p id="msgComision" style="font-size:0.78rem; margin-top:8px; display:none;"></p>
+                </div>
+
+                <!-- ── TRANSPORTADORAS / CUENTAS ── -->
+                <div class="config-card">
+                    <h2>🚚 Cuentas de Transportadoras</h2>
+                    <p style="font-size:0.8rem; color:#777; margin-bottom:12px;">
+                        El nombre de cuenta aparece en cada pedido según la transportadora seleccionada.
+                    </p>
+                    <div id="listaTransportadoras">
+                        <p class="text-secondary" style="font-size:0.83rem;">Cargando...</p>
+                    </div>
+                </div>
+
+                <!-- ── BONOS ── (ocupa todo el ancho) -->
+                <div class="config-card" style="grid-column: span 2;">
+                    <h2>🎁 Bonos y Comisiones Especiales</h2>
+
+                    <div id="listaBonos">
+                        <p class="text-secondary" style="font-size:0.83rem;">Cargando bonos...</p>
+                    </div>
+
+                    <!-- Formulario nuevo bono -->
+                    <div class="form-inline" style="flex-wrap:wrap; gap:10px;">
+                        <div class="form-group" style="min-width:160px;">
+                            <label>Nombre del bono *</label>
+                            <input type="text" id="bonoNombre" placeholder="Ej: Bono meta mes">
+                        </div>
+                        <div class="form-group" style="min-width:200px;">
+                            <label>Descripción</label>
+                            <input type="text" id="bonoDescripcion" placeholder="Descripción opcional">
+                        </div>
+                        <div class="form-group" style="min-width:130px;">
+                            <label>Tipo</label>
+                            <select id="bonoTipo" onchange="toggleMetaBono()">
+                                <option value="fijo">Fijo (siempre)</option>
+                                <option value="cantidad">Por # pedidos</option>
+                                <option value="valor">Por $ vendido</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="campoMeta" style="min-width:120px; display:none;">
+                            <label>Meta</label>
+                            <input type="number" id="bonoMeta" min="0" placeholder="Ej: 20">
+                        </div>
+                        <div class="form-group" style="min-width:120px;">
+                            <label>Valor bono *</label>
+                            <input type="number" id="bonoValor" min="0" step="1000" placeholder="Ej: 50000">
+                        </div>
+                        <button class="btn-primary" onclick="crearBono()"
+                            style="padding:7px 14px; font-size:0.83rem; align-self:flex-end;">
+                            + Agregar Bono
+                        </button>
+                    </div>
+                    <p id="msgBono" style="font-size:0.78rem; margin-top:8px; display:none;"></p>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: Editar cuenta transportadora -->
+    <div id="modalCuenta" class="modal modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏️ Editar Cuenta</h2>
+                <button class="modal-close" id="btnCerrarCuenta">&times;</button>
+            </div>
+            <form id="formCuenta" style="padding: var(--spacing-lg);">
+                <input type="hidden" id="cuentaTransportadoraId">
+                <p style="font-size:0.85rem; color:#555; margin-bottom:14px;">
+                    Transportadora: <strong id="cuentaTransportadoraNombre"></strong>
+                </p>
+                <div class="form-group">
+                    <label>Nombre de la cuenta</label>
+                    <input type="text" id="cuentaNombre" placeholder="Ej: Karime Lindarte" required>
+                </div>
+                <div class="form-group">
+                    <label>URL de seguimiento</label>
+                    <input type="text" id="cuentaUrl" placeholder="https://...">
+                    <small class="text-secondary">La guía se concatena al final de esta URL</small>
+                </div>
+                <div id="errorCuenta" class="error-message" style="display:none;"></div>
+                <div class="flex flex-end mt-2" style="gap:10px;">
+                    <button type="button" class="btn-secondary" id="btnCancelarCuenta">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/pages/configuracion.js"></script>
+    <script src="../js/sidebar.js"></script>
+</body>
+
+</html>
